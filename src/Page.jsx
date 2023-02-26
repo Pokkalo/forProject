@@ -16,6 +16,7 @@ import Borrow from './pages/Borrow'
 import Cart from './pages/Cart'
 import UserPage from './pages/UserPage'
 import Products from './pages/Products'
+import Payment from './pages/Payment'
 
 import { AuthContextProvider } from './data/UserData'
 import { ShoppingCartProvider } from './data/CartContent'
@@ -49,6 +50,7 @@ const Page = () => {
           <Route path='/products' element={<Products/>}></Route>
           <Route path='/borrow' element={<Borrow/>}></Route>
           <Route path='/cart' element={<Cart/>}></Route>
+          {/* <Route path='/cart/payment' element={<Payment/>}></Route> */}
           <Route path='*' element={<ErrorPage/>}></Route>
       </Routes>
       </ShoppingCartProvider>

@@ -75,7 +75,7 @@ export function ShoppingCartProvider({children}){
     }
 
     const cartQuantity = cartItems.reduce(
-        (quantity, item) => item.quantity + quantity, 0
+        (quantity, item) => (item.quantity + quantity*1), 0
     )
     return (
         <ShoppingCartContext.Provider 

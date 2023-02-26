@@ -19,7 +19,6 @@ import {FaRegTrashAlt} from 'react-icons/fa'
 const Cart = () => {
   
   const inputValue = useRef(null)
-  const [proData, setProData] = useState(productInput)
   const [cartData, setCartData] = useState([])
   const [cartQua, setCartQua] = useState()
   const [state, setState] = useState(false)
@@ -55,13 +54,14 @@ const Cart = () => {
       return {id: id, quantity: 1}}
       ))
   }
+    
 
     try {
       fetchData()
       console.log(cartQua)
     } catch (error) {
       console.log(error.message)
-      setState(false)
+      // setState(false)
     } finally{
       
     }
@@ -85,9 +85,27 @@ const Cart = () => {
 
   }
 
+  const goPayment = () => {
+    setState(true)
+  }
+
   const testing = () =>{
-    console.log(cartItems.find((i) => i.id > 1))
+    console.log(cartQua)
+    console.log(cartQuantity)
+  }
+
+  const changeQuantity = (e, id) => {
     
+    setCartQua(cartQua => {
+      return cartQua.map(item => {
+          if(item.id === id){
+              console.log(e.target.value)
+              return {...item, quantity: e.target.value*1}
+          }else{
+              return item
+          }
+      })
+  })
   }
 
   return (
@@ -113,7 +131,101 @@ const Cart = () => {
       </Container>
         </Alert>
         </div>
-        }    
+        }
+
+      {state? 
+      
+      <div class="--payment-body w-100 pt-3 ">
+  
+            <div class="--payment-card-body">
+                <div class="--payment-row row">
+                    <div class="col-md-6">
+                        <div class="--payment-left border">
+                            <div class="--payment-row">
+                                <span class="--payment-header">Payment</span>
+                                <div class="--payment-icons">
+                                    <img src="https://img.icons8.com/color/48/000000/visa.png" />
+                                    <img src="https://img.icons8.com/color/48/000000/mastercard-logo.png" />
+                                    <img src="https://img.icons8.com/color/48/000000/maestro.png" />
+                                </div>
+                            </div>
+
+                            <form className='--payment-form'>
+                                <span>Cardholder's name:</span>
+                                <input placeholder="your name" className='--payment-input'/>
+                                    <span>Card Number:</span>
+                                    <input placeholder="0125 6780 4567 9909" className='--payment-input'/>
+                                        <div class="--payment-row">
+                                            <div class="col-4"><span>Expiry date:</span>
+                                                <input placeholder="YY/MM" className='--payment-input'/>
+                                            </div>
+                                            <div class="col-4"><span>CVV:</span>
+                                                <input id="cvv" className='--payment-input'/>
+                                            </div>
+                                        </div>
+                                <input type="checkbox" id="save_card" class="align-left" className='--payment-input'/>
+                                <label for="save_card">Save card details to wallet</label>
+                            </form>
+                            <div class="col-md-5">
+                            </div>
+                        </div>
+                                
+                        </div>
+                        <div className="col-md-6">
+                        <div class="--payment-right border">
+                            <div class="--payment-header">Order Summary</div>
+                            <p>{cartQua.reduce((tot, item) => (tot + item.quantity),0)} item(s)</p>
+
+                            {
+                               cartData.map((item) => (
+                                    <div key={item.id} class="--payment-row row p-2">
+                                        <div class="col-4 align-self-center"><img class="img-fluid" src={item.images[0]} /></div>
+                                        <div class="--payment-col-8 col-8">
+                                            <div class="--payment-row"><b>$ {item.price}</b></div>
+                                            <div class="--payment-row text-muted">{item.description}</div>
+                                            <div class="--payment-row">Quantity: {cartItems.find((i) => i.id == item.id).quantity}</div>
+                                        </div>
+                                    </div>
+                                ))
+                            }
+                            
+                            <hr />
+                            <div class="--payment-row --payment-lower row">
+                                <div class="col text-left">Subtotal</div>
+                                <div class="col text-right">$ {
+                                  cartData.reduce((tot, item) =>{
+                                  const qua = cartItems.find((i) => i.id == item.id).quantity
+                                  return (tot + item.price*qua)}
+                                  ,0)}
+                                  </div>
+                            </div>
+                            <div class="--payment-row --payment-lower row">
+                                <div class="col text-left">Delivery</div>
+                                <div class="col text-right">Free</div>
+                            </div>
+                            <div class="--payment-row --payment-lower row">
+                                <div class="col text-left"><b>Total to pay</b></div>
+                                <div class="col text-right"><b>$ {
+                                  cartData.reduce((tot, item) =>{
+                                  const qua = cartItems.find((i) => i.id == item.id).quantity
+                                  return (tot + item.price*qua)}
+                                  ,0)}
+                                  </b></div>
+                            </div>
+                            <div class="--payment-row --payment-lower">
+                                <div class="col text-left"><a href="#"><u>Add promo code</u></a></div>
+                            </div>
+                            <button class="--payment-btn" onClick={testing}>Place order</button>
+                            <p class="text-muted text-center">Complimentary Shipping & Returns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      
+      
+      :
+      
       <section class="pt-5 pb-5">
   <div class="container">
     <div class="row w-100">
@@ -138,8 +250,9 @@ const Cart = () => {
       <th className='' style={{width: "16%"}}>#</th>
     </tr>
   </thead>
+
   <tbody>
-      
+    
       {cartData.map((data, index) => (
       <tr key={index}>
 
@@ -163,8 +276,11 @@ const Cart = () => {
               min={1}
               ref={inputValue}
               onChange={(e) => 
-                
-                setCartQuantity(e, data.id)}
+                {
+                setCartQuantity(e, data.id)
+                changeQuantity(e, data.id)
+              }
+              }
               />
           </td>
           <td class="actions" data-th="">
@@ -196,7 +312,7 @@ const Cart = () => {
     </div>
     <div class="row mt-4 d-flex align-items-center">
         <div class="col-sm-6 order-md-2 text-right">
-            <a href="catalog.html" class="btn btn-primary mb-4 btn-lg pl-5 pr-5">Checkout</a>
+            <a class="btn btn-primary mb-4 btn-lg pl-5 pr-5" onClick={goPayment}>Checkout</a>
         </div>
         <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
             <a onClick={()=>{nav("/products")}}>
@@ -204,10 +320,11 @@ const Cart = () => {
         </div>
     </div>
 </div>
-</section>
+</section>}
 
     </div>
   )
 }
+
 
 export default Cart
