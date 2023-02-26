@@ -1,7 +1,7 @@
 {
   "name": "forboot",
   "version": "0.1.0",
-  "homepage": "https://pokkalo.github.io/forproject",
+  "homepage": "https://pokkalo.github.io/forProject",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
